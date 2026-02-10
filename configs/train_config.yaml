@@ -1,0 +1,74 @@
+# Training configuration for multi-task dataset fine-tuning
+
+# Data paths
+data:
+  # Training data (contamination dataset)
+  math_train_path: "data/math/full_contam.parquet"
+  mmlu_train_path: "data/mmlu/full_contam.parquet"
+  arc_train_path: "data/arc/full_contam.parquet"
+  
+  # Validation data
+  math_val_path: "data/math/full_val.parquet"
+  mmlu_val_path: "data/mmlu/full_val.parquet"
+  arc_val_path: "data/arc/full_val.parquet"
+  
+  keep_seen: false  # Whether to filter for seen examples only
+
+# Model configuration
+model:
+  model_name: "mistralai/Mistral-7B-Instruct-v0.1"  # Base model to fine-tune
+  use_flash_attention: false
+
+# LoRA configuration
+lora:
+  r: 32  # LoRA rank
+  lora_alpha: 64  # LoRA alpha scaling
+  lora_dropout: 0.05
+  target_modules: "all-linear"  # Target all linear layers for LoRA
+    # - q_proj
+    # - v_proj
+    # - k_proj
+    # - o_proj
+  bias: "none"
+  task_type: "CAUSAL_LM"
+
+# Training hyperparameters
+training:
+  output_dir: "output/contam"
+  experiment_name: "contamination"
+  num_train_epochs: 10
+  per_device_train_batch_size: 6
+  per_device_eval_batch_size: 6
+  gradient_accumulation_steps: 8
+  learning_rate: 5.0e-5
+  weight_decay: 0.01
+  warmup_ratio: 0.0
+  lr_scheduler_type: "constant"
+  max_grad_norm: 10.0
+  
+  # Evaluation and saving
+  eval_strategy: "steps"
+  eval_steps: 50
+  save_strategy: "steps"
+  save_steps: 50
+  save_total_limit: 1
+  load_best_model_at_end: true
+  metric_for_best_model: "eval_loss"
+  greater_is_better: false
+  
+  # Logging
+  logging_steps: 10
+  report_to: "wandb"
+  
+  # Other settings
+  fp16: false
+  bf16: true
+  gradient_checkpointing: true
+  optim: "adamw_torch"
+  seed: 42
+
+# SFT specific settings
+sft:
+  max_seq_length: 2048
+  packing: false
+  dataset_text_field: null  # Will use messages format

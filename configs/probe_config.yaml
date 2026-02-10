@@ -1,0 +1,68 @@
+# Probe Training Configuration
+
+# Experiment settings
+experiment:
+  name: "contamination_probe"
+  project: "data-contamination-detection"
+  entity: null  # Set to your wandb username/team
+  tags:
+    - "probe"
+    - "contamination"
+  notes: "Training MLP probe to detect data contamination"
+
+# Model settings
+model:
+  embedding_dim: 4096  # Mistral-7B hidden dimension
+  hidden_dims: [256, 128]  # List of hidden layer dimensions
+  dropout: 0.1
+
+# Data settings
+data:
+  model_name: "mistralai--Mistral-7B-Instruct-v0.1"
+  datasets: ["math", "arc", "mmlu"]  # List of datasets to train on
+  embeddings_dir: "embeddings"
+  data_dir: "data"
+  label_column: "seen"
+
+# Training settings
+training:
+  batch_size: 32
+  num_epochs: 1000
+  learning_rate: 0.001
+  weight_decay: 0.0001
+  gradient_clip: 1.0
+  early_stopping_patience: 100
+  
+  # Loss function
+  use_class_weights: false  # Use class weights for imbalanced data
+  
+  # Checkpointing
+  save_dir: "output_probes"  # Base directory, will be appended with model name
+
+# Optimizer settings
+optimizer:
+  name: "adamw"  # Options: adam, adamw, sgd
+  betas: [0.9, 0.999]
+
+# Scheduler settings (optional)
+scheduler:
+  enabled: false
+  name: "reduce_on_plateau"  # Options: reduce_on_plateau, cosine, step
+  patience: 5
+  factor: 0.5
+  min_lr: 1e-6
+
+# Logging settings
+logging:
+  log_interval: 10  # Log every N batches
+  eval_interval: 1  # Evaluate every N epochs
+  save_predictions: true  # Save predictions on validation set
+
+# Hardware settings
+hardware:
+  device: "cuda"  # cuda or cpu
+  num_workers: 4
+  pin_memory: true
+
+# Reproducibility
+seed: 42

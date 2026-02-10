@@ -1,0 +1,28 @@
+# Core ML/DL
+torch
+numpy
+pandas
+
+# Data processing
+datasets
+pyarrow
+
+# Machine Learning
+scikit-learn
+
+# Transformers & Fine-tuning
+transformers
+peft
+
+# Visualization
+matplotlib
+
+# Templating (for data generation)
+jinja2
+
+# Progress bars
+tqdm
+
+# Jupyter notebooks
+jupyter
+ipykernel
